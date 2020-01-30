@@ -20,6 +20,7 @@ public class GraphADT
     public void addEdge(int from, int to)
     {
         adjV[from][to].addEdge();
+        adjV[to][from].addEdge();
         edges += 1;
     }
 
@@ -78,8 +79,9 @@ public class GraphADT
         {
             System.out.println("Graph has a total of " + graph.getVertices() + " vertices and " + graph.getEdges() + " edges.");
             System.out.println("Choose: ");
-            System.out.println("1. Add edge from a vertex to another\n2. Remove edge from a vertex to another\n3. Show Graph Adjacency Matrix\n4. Exit\nInput Selection: "); 
+            System.out.println("1. Add edge \n2. Remove edge \n3. Show Adjacency Matrix\n4. Exit\nInput Selection: "); 
             int choice = scan.nextInt();
+
             switch (choice)
             {
                 case 1: 
@@ -105,6 +107,7 @@ public class GraphADT
                     bool = false;
                     break;
             }
+
         }
     }
 }
