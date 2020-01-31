@@ -2,14 +2,16 @@ import java.util.ArrayList;
 
 public class Vertex
 {
-    private String vertexName;
+    private String Name;
     private boolean hasEdge;
+    private boolean visited = false;
     private String weight;
     public ArrayList<Vertex> adjList = new ArrayList<Vertex>();
 
+
     public Vertex(String name)
     {
-        this.vertexName = name;
+        this.Name = name;
     }
 
     public Vertex()
@@ -18,18 +20,41 @@ public class Vertex
 
     public void addAdjV(Vertex add)
     {
-        System.out.println("To add: " + add);
         this.adjList.add(add);
+    }
+
+    public void setVisited()
+    {
+        this.visited = true;
+    }
+
+    public boolean hasVisited()
+    {
+        return this.visited;
+    }
+
+    public Vertex removeAdjV(String remove)
+    {
+        for (int i = 0; i < adjList.size(); i++)
+        {
+            if (adjList.get(i).getName() == remove)
+            {
+                Vertex removed = adjList.get(i);
+                adjList.remove(i);
+                return removed;
+            }
+        }
+        return null;
     }
 
     public void setName(String name)
     {
-        this.vertexName = name;
+        this.Name = name;
     }
 
     public String getName()
     {
-        return this.vertexName;
+        return this.Name;
     }
 
     public void setWeight(String in)

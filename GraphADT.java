@@ -1,54 +1,68 @@
-import java.util.Scanner;
+import java.util.Stack;
+import java.util.ArrayList;
 
 public class GraphADT
 {
-    private Vertex[][] adjM;
-    private Vertex[] vxList;
+    private Boolean[][] adjM;
+    public ArrayList<Vertex> vert = new ArrayList<Vertex>();
+    // private DArray<Vertex> vertices = new DArray<Vertex>();
     private int edges = 0;
+    private Stack<Vertex> dfs = new Stack<Vertex>();
 
-    public GraphADT(int vertices)
+    public GraphADT()
     {
-        vxList = new Vertex[vertices];
-        for (int i = 0 ; i < vertices; i++)
-        {
-            Vertex z = new Vertex(Integer.toString(i));
-            vxList[i] = z;
-        }
+    }
 
-        adjM = new Vertex[vertices][vertices];
-        for (int i = 0 ; i < vertices; i++)
+    public void addVertex(String name)
+    {
+        Vertex in = new Vertex();
+        in.setName(name);
+        vert.add(in);
+
+        adjM = new Boolean[vert.size()][vert.size()];
+        for (int i = 0 ; i < vert.size(); i++)
         {
-            for (int x = 0; x < vertices; x++)
+            for (int x = 0; x < vert.size(); x++)
             {
-                Vertex y = new Vertex();
-                adjM[i][x] = y;
+                Boolean bool = false;
+                adjM[i][x] = bool;
             }
         }
     }
 
-    public void addEdge(int from, int to, String wght)
+    public Vertex removeVertex(String remove)
     {
-        adjM[from][to].addEdge();
-        vxList[from].addEdge();
-        adjM[from][to].setWeight(wght);
-        vxList[from].addAdjV(vxList[to]);
+        for (int i = 0; i < vert.size(); i++)
+        {
+            if (vert.get(i).getName() == remove)
+            {
+                Vertex removed = vert.get(i);
+                vert.remove(i);
+                return removed;
+            }
+        }
+        return null;
+    }
 
-        adjM[to][from].addEdge();
-        vxList[to].addEdge();
-        adjM[to][from].setWeight(wght);
-        vxList[to].addAdjV(vxList[from]);
+    public void addEdge(int from, int to)
+    {
+        vert.get(from).addEdge();
+        vert.get(from).addAdjV(vert.get(to));
+        adjM[from][to] = true;
+        vert.get(to).addEdge();
+        vert.get(to).addAdjV(vert.get(from));
+        adjM[to][from] = true;
+
         edges += 1;
     }
 
-    public void addVertex()
-    {
-
-    }
-
-    public boolean removeEdge(int from, int to)
+    public void removeEdge(int from, int to)
     {
         edges -= 1;
-        return adjM[from][to].removeEdge();
+        vert.get(from).removeEdge();
+        vert.get(from).removeAdjV(vert.get(to).getName());
+        vert.get(to).removeEdge();
+        vert.get(to).removeAdjV(vert.get(from).getName());
     }
 
     public int getEdges()
@@ -58,18 +72,10 @@ public class GraphADT
 
     public int getVertices()
     {
-        return adjM.length;
+        return vert.size();
     }
 
-    public void depthTraverse()
-    {
-        // for (int i = 0; i <= ; i ++)
-        // {
-
-        // }
-    }
-
-    public void printGraph()
+    public void printMatrix()
     {
         System.out.print("\n   ");
         for (int i = 0 ; i < adjM.length ; i++)
@@ -87,106 +93,82 @@ public class GraphADT
             System.out.print((i) + "| ");
             for (int x = 0; x < adjM.length ; x++)
             {
-                if (adjM[i][x].hasEdge())
-                {
+                if (adjM[i][x])
                     System.out.print("1 ");
-                    // printWeights(i, x);
-                }
                     
                 else
                     System.out.print("0 ");
             }
             System.out.print("\n");
         }
+        printVertexList();
 
         System.out.print("\n");
+    }
+
+    public void printVertexList()
+    {
+        System.out.println("\nLegend: ");
+
+        for (int i = 0; i < vert.size(); i++)
+        {
+            System.out.println(i+" - " + vert.get(i).getName());
+        }
     }
 
     public void printAdjList()
     {
         System.out.print("\n");
-        for (int i = 0; i < vxList.length ; i++)
+        for (int i = 0; i < vert.size() ; i++)
         {
-            System.out.print((i+1)+".");
+            System.out.print(vert.get(i).getName());
 
-            if (vxList[i].hasEdge())
+            if (vert.get(i).hasEdge())
             {
-                for (int x = 0; x < vxList[i].adjList.size(); x++)
+                for (int x = 0; x < vert.get(i).adjList.size(); x++)
                     {
-                        System.out.print(" -> " + vxList[i].adjList.get(x).getName());
+                        System.out.print(" -> " + vert.get(i).adjList.get(x).getName());
                     }
             }
 
+            else
+            {
+                System.out.print(" has no adjacent vertices.");
+            }
             System.out.print("\n");
         }
+        System.out.print("\n");
+    }
+
+    public void depthTraverse()
+    {
+        System.out.print("DFS: [");
+        for (int i = 0; i < vert.size(); i ++)
+        {
+            dfs.push(vert.get(i));
+            // System.out.println("Detected: "+dfs.peek().getName());
+            dfs.peek().setVisited();
+            if (dfs.peek().hasEdge() && !dfs.peek().hasVisited())
+            {
+                // System.out.println("Has edge.");
+                for (int x = 0; x < vert.get(i).adjList.size(); x ++)
+                {
+                    if (!vert.get(i).adjList.get(x).hasVisited())
+                    {
+                        // System.out.print("Now pushing: "+vert.get(i).adjList.get(x).getName()+"\n");
+                        dfs.push(vert.get(i).adjList.get(x));
+                    }
+                }
+            }
+            else
+            {
+                System.out.print(" "+dfs.pop().getName());
+            }
+        }
+        System.out.println("]");
     }
 
     public void printWeights(int f, int t)
     {
-        if (adjM[f][t].getWeight()==null)
-            System.out.println("Edge has no weight.");
-        else
-            System.out.println("\nEdge adjacent to "+f+" and "+t+" has weight: "+adjM[f][t].getWeight());
-    }
-
-    public static void main(String[] args)
-    {
-        Scanner scan = new Scanner(System.in);
-        Boolean bool = true;
-        int choice;
-
-        System.out.print ("Input number of vertices: ");
-        int size = scan.nextInt();
-        GraphADT graph = new GraphADT(size);
-
-        while(bool = true)
-        {
-            // System.out.println ("bool = " + bool);
-            System.out.println("Undirected graph has a total of " + graph.getVertices() + " vertices and " + graph.getEdges() + " edges.");
-            System.out.println("Choose (1-4 only): ");
-            System.out.print("1. Add edge \n2. Remove edge \n3. Show Adjacency Matrix\n4. Show adjacency list\n5. Show weight of an edge\nInput Selection: "); 
-            choice = scan.nextInt();
-
-            switch (choice)
-            {
-                case 1: 
-                    System.out.println("ADDING AN EDGE (From 0 to "+(size-1)+" only.)");
-                    System.out.print("From: ");
-                    int fa = scan.nextInt();
-                    System.out.print("To: ");
-                    int ta = scan.nextInt();
-                    System.out.print("Weight: ");
-                    String wgt = scan.nextLine();
-                    
-                    graph.addEdge(fa, ta, wgt);
-                    break;
-                case 2:
-                    System.out.println("REMOVING AN EDGE");
-                    System.out.print("From: ");
-                    int fr = scan.nextInt();
-                    System.out.print("To: ");
-                    int tr = scan.nextInt();
-                    
-                    graph.removeEdge(fr, tr);
-                    break;
-                case 3:
-                    graph.printGraph();
-                    break;
-                case 4:
-                    graph.printAdjList();
-                    break; 
-                case 5:
-                    System.out.println("PRINTING WEIGHT ");
-                    System.out.print("Vertex 1: ");
-                    int fw = scan.nextInt();
-                    System.out.print("Vertex 2: ");
-                    int tw = scan.nextInt();
-
-                    graph.printWeights(fw, tw);
-                    bool = false;
-                    
-            }
-
-        }
     }
 }
