@@ -5,8 +5,9 @@ public class Vertex
     private String Name;
     private boolean hasEdge;
     private boolean visited = false;
-    private String weight;
+    // private String weight;
     public ArrayList<Vertex> adjList = new ArrayList<Vertex>();
+    private int path = -1;
 
 
     public Vertex(String name)
@@ -24,6 +25,11 @@ public class Vertex
     }
 
     public void setVisited()
+    {
+        this.visited = true;
+    }
+
+    public void unVisit()
     {
         this.visited = true;
     }
@@ -57,14 +63,33 @@ public class Vertex
         return this.Name;
     }
 
-    public void setWeight(String in)
+    // public void setWeight(String in)
+    // {
+    //     this.weight = in;
+    // }
+
+    // public String getWeight()
+    // {
+    //     return this.weight;
+    // }
+    public void addPath()
     {
-        this.weight = in;
+        this.path += 1;
     }
 
-    public String getWeight()
+    public void setPath(int x)
     {
-        return this.weight;
+        this.path = x;
+    }
+
+    public int getPath()
+    {
+        return this.path;
+    }
+
+    public void resetPath()
+    {
+        this.path = 0;
     }
 
     public void addEdge()

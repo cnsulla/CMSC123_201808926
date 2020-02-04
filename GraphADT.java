@@ -65,6 +65,45 @@ public class GraphADT
         vert.get(to).removeAdjV(vert.get(from).getName());
     }
 
+    public ArrayList<Integer> getNeighbor(Vertex x)
+    {
+        ArrayList<Integer> neighbors = new ArrayList<Integer>();
+        int position = 0;
+        for (int c = 0; c < vert.size(); c++)
+        {
+            if (x.getName() == vert.get(c).getName())
+            {
+                position = c;
+                break;
+            }
+        }
+
+        for (int i = 0; i < adjM.length; i++)
+        {
+            if (adjM[position][i])
+                neighbors.add(i);
+        }
+        return neighbors;
+    }
+
+    public void resetVisits()
+    {
+        for (int c = 0; c < vert.size(); c++)
+        {
+            vert.get(c).unVisit();
+        }
+    }
+
+    public int getPosition(Vertex x)
+    {
+        for (int i = 0; i < vert.size(); i++)
+        {
+            if (x.getName() == vert.get(i).getName())
+                return i;
+        }
+        return -1;
+    }
+
     public int getEdges()
     {
         return edges;
@@ -121,7 +160,7 @@ public class GraphADT
         System.out.print("\n");
         for (int i = 0; i < vert.size() ; i++)
         {
-            System.out.print(vert.get(i).getName());
+            System.out.print(i +". " +vert.get(i).getName());
 
             if (vert.get(i).hasEdge())
             {
@@ -137,35 +176,87 @@ public class GraphADT
             }
             System.out.print("\n");
         }
-        System.out.print("\n");
     }
 
     public void depthTraverse()
     {
+        Vertex current = vert.get(0);
+        dfs.push(current);
+        int ctr = 0;
+
         System.out.print("DFS: [");
-        for (int i = 0; i < vert.size(); i ++)
+        while (!dfs.empty())
         {
-            dfs.push(vert.get(i));
-            // System.out.println("Detected: "+dfs.peek().getName());
-            dfs.peek().setVisited();
-            if (dfs.peek().hasEdge() && !dfs.peek().hasVisited())
+            if (!current.hasVisited())
             {
-                // System.out.println("Has edge.");
-                for (int x = 0; x < vert.get(i).adjList.size(); x ++)
-                {
-                    if (!vert.get(i).adjList.get(x).hasVisited())
-                    {
-                        // System.out.print("Now pushing: "+vert.get(i).adjList.get(x).getName()+"\n");
-                        dfs.push(vert.get(i).adjList.get(x));
-                    }
-                }
+                current.setVisited();
+                System.out.print(" " +current.getName());
+                // System.out.print(" " +dfs.pop().getName());
             }
+            
+            if (ctr < current.adjList.size() 
+                        && current.hasEdge()
+                                && !current.adjList.get(ctr).hasVisited())
+            {
+                current = current.adjList.get(ctr);
+                dfs.push(current);
+                
+                // System.out.println("pushing "+current.getName());
+                ctr=0;
+            }
+
+            else if (ctr < current.adjList.size() 
+                    && current.adjList.get(ctr).hasVisited())
+            {
+                // System.out.println("All current nearby shits are visited, "+ctr+" of "+vert.size());
+                ctr++;
+            }
+
             else
             {
-                System.out.print(" "+dfs.pop().getName());
+                dfs.pop();
             }
         }
-        System.out.println("]");
+        // System.out.print(" " +dfs.pop().getName());
+        System.out.println(" ]");
+    }
+
+    public void breadthTraverse()
+    {
+        Vertex current = vert.get(0);
+        dfs.push(current);
+        int ctr = 0;
+
+        System.out.print("DFS: [");
+        while (!dfs.empty())
+        {
+            current.setVisited();
+            dfs.pop();
+            System.out.print(" " +current.getName());
+            
+
+            if (ctr < current.adjList.size() 
+                    && current.hasEdge() 
+                            && current.adjList.size()!=0 
+                                    && !current.adjList.get(ctr).hasVisited())
+            {
+                current = current.adjList.get(ctr);
+                dfs.push(current);
+                ctr=0;
+            }
+
+            else if (ctr < current.adjList.size() 
+                    && current.adjList.get(ctr).hasVisited())
+            {
+                ctr++;
+            }
+
+            else
+            {
+            }
+        }
+        
+        System.out.println(" ]");
     }
 
     public void printWeights(int f, int t)
