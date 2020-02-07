@@ -5,9 +5,9 @@ public class GraphADT
 {
     private Boolean[][] adjM;
     public ArrayList<Vertex> vert = new ArrayList<Vertex>();
-    // private DArray<Vertex> vertices = new DArray<Vertex>();
     private int edges = 0;
     private Stack<Vertex> dfs = new Stack<Vertex>();
+    // private DArray<Vertex> vertices = new DArray<Vertex>();
 
     public GraphADT()
     {
@@ -30,17 +30,18 @@ public class GraphADT
         }
     }
 
-    public Vertex removeVertex(String remove)
+    public void adjustMatrix()
     {
-        for (int i = 0; i < vert.size(); i++)
+        
+    }
+
+    public Vertex removeVertex(int index)
+    {
+        for (int i = 0 ; i < vert.size(); i ++)
         {
-            if (vert.get(i).getName() == remove)
-            {
-                Vertex removed = vert.get(i);
-                vert.remove(i);
-                return removed;
-            }
+            
         }
+
         return null;
     }
 
@@ -52,6 +53,16 @@ public class GraphADT
         vert.get(to).addEdge();
         vert.get(to).addAdjV(vert.get(from));
         adjM[to][from] = true;
+
+        edges += 1;
+    }
+
+    public void addOneWayEdge(int from, int to)
+    {
+        vert.get(from).addEdge();
+        vert.get(from).addAdjV(vert.get(to));
+        vert.get(to).addInDegree();
+        adjM[from][to] = true;
 
         edges += 1;
     }
@@ -112,6 +123,28 @@ public class GraphADT
     public int getVertices()
     {
         return vert.size();
+    }
+
+    public boolean isDAG()
+    {
+        Vertex current = vert.get(0);
+        ArrayList<Integer> neighbors = getNeighbor(current);
+        Stack<Vertex> stack = new Stack();
+        
+        while (!stack.isEmpty())
+        {
+            for (int i = 0; i < neighbors.size(); i ++)
+            {
+                stack.add(vert.get(neighbors.get(i)));
+            }
+
+            if (stack.peek().getInDegree() == 0)
+            {
+                
+            }
+        }
+
+        return false;
     }
 
     public void printMatrix()

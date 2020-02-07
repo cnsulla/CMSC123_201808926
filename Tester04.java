@@ -1,6 +1,7 @@
 import java.util.Scanner;
+import java.util.ArrayList;
 
-public class Tester01
+public class Tester04
 {
     public static void main(String[] args)
     {
@@ -8,7 +9,7 @@ public class Tester01
         Boolean bool = true;
         int choice;
         
-
+        SSUPL sup = new SSUPL();
         GraphADT graph = new GraphADT();
 
         while(bool = true)
@@ -16,9 +17,9 @@ public class Tester01
             System.out.println("-------------------------------------------------------------------------");
             graph.printAdjList();
             // System.out.println ("bool = " + bool);
-            System.out.println("\nUndirected, unweighted graph has a total of " + graph.getVertices() + " vertices and " + graph.getEdges() + " edges.");
+            System.out.println("\nDirected, unweighted graph has a total of " + graph.getVertices() + " vertices and " + graph.getEdges() + " edges.");
             System.out.println("Choose (1-7 only): ");
-            System.out.print("1. Add Vertex\n2. Remove Vertex\n3. Add edge \n4. Remove edge \n \n5. Show Adjacency Matrix\n6. Show adjacency list\n7. Show weight of an edge\n8. Depth First Search\n\nInput Selection: "); 
+            System.out.print("1. Add Vertex\n2. Remove Vertex\n3. Add directed edge \n4. Remove edge \n5. Depth First Search\n6. SSUPL\n7. Topological Sort\n\nInput Selection: "); 
             choice = scan.nextInt();
             System.out.println("-------------------------------------------------------------------------");
             switch (choice)
@@ -48,7 +49,7 @@ public class Tester01
                     // System.out.print("Weight: ");
                     // String wgt = scan.next();
                     
-                    graph.addEdge(fa, ta);
+                    graph.addOneWayEdge(fa, ta);
                     break;
                 case 4:
                     System.out.println("REMOVING AN EDGE");
@@ -60,24 +61,39 @@ public class Tester01
                     graph.removeEdge(fr, tr);
                     break;
                 case 5:
-                    graph.printMatrix();
-                    break;
-                case 6:
-                    graph.printAdjList();
-                    break; 
-                case 7:
-                    System.out.println("PRINTING WEIGHT ");
-                    System.out.print("Vertex 1: ");
-                    int fw = scan.nextInt();
-                    System.out.print("Vertex 2: ");
-                    int tw = scan.nextInt();
-
-                    graph.printWeights(fw, tw);
-                    break;
-                case 8:
                     System.out.println("\nPRINTING: DFS");
 
                     graph.depthTraverse();
+                    break;
+                case 6:
+                    System.out.println("FINDING PATHS TO ALL VERTICES");
+                    graph.printVertexList();
+                    System.out.print("Source Vertex: ");
+                    int dimen = scan.nextInt();
+                    int[] arrout = sup.SSUPL(graph, graph.vert.get(dimen));
+
+                    System.out.print("Paths:\t");
+                    for (int i = 0; i < arrout.length; i++){
+                        System.out.print(arrout[i]+"\t ");
+                    }
+                    System.out.println();
+                    System.out.print("Vertices:\t");
+                    for (int i = 0; i < graph.vert.size(); i++){
+                        System.out.print(graph.vert.get(i).getName()+"\t ");
+                    }
+                    System.out.println();
+                    break;
+                case 7:
+                    System.out.println("GETTING TOPOLOGICAL SORT");
+                    try 
+                    {
+                        TSort tsort = new TSort();
+                        tsort.topologicalSort(graph);
+                    }
+                    catch (InputNotDAGException e){
+                        System.out.println(e.getMessage());
+                    }
+                    System.out.println();
                     break;
             }
 

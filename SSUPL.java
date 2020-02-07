@@ -16,7 +16,7 @@ public class SSUPL
             Vertex current = bfs.remove();
             graph.vert.get(graph.getPosition(current)).setVisited();
             graph.vert.get(graph.getPosition(current)).setPath(current.getPath());
-            
+
             ArrayList<Integer> neighbors = graph.getNeighbor(current);
 
 

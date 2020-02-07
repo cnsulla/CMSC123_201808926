@@ -34,9 +34,10 @@ public class Tester03
                 case 2:
                     System.out.println("REMOVING A VERTEX");
                     System.out.print("Vertex Name:");
-                    String reName = scan.next();
+                    graph.printVertexList();
+                    int reVertex = scan.nextInt();
                 
-                    graph.removeVertex(reName);
+                    graph.removeVertex(reVertex);
                     break;
                 case 3: 
                     System.out.println("ADDING AN EDGE (From 0 to " + (graph.vert.size()-1) + " only.)");
@@ -76,7 +77,7 @@ public class Tester03
                         System.out.print(arrout[i]+" ");
                     }
                     System.out.println();
-                    System.out.print("Graphs:\t");
+                    System.out.print("Vertices:\t");
                     for (int i = 0; i < graph.vert.size(); i++){
                         System.out.print(graph.vert.get(i).getName()+" ");
                     }
