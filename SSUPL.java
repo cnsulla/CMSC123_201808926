@@ -17,8 +17,7 @@ public class SSUPL
             graph.vert.get(graph.getPosition(current)).setVisited();
             graph.vert.get(graph.getPosition(current)).setPath(current.getPath());
 
-            ArrayList<Integer> neighbors = graph.getNeighbor(current);
-
+            ArrayList<Integer> neighbors = graph.getNeighbors(current);
 
             for (int i = 0; i < neighbors.size(); i ++)
             {

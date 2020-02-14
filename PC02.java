@@ -9,19 +9,18 @@ public class PC02
 	{
 		for (int i = 0; i < k; i ++)
 		{
-			for (int x = 0; x <= i; x ++)
-			{
-				System.out.print("X");
-            }
-            for (int j = i+1; j < k; j ++)
-			{
-				System.out.print(" ");
-            }
-            for (int w = i; w > 0; w--)
-            {
-                System.out.print("X");
-            }
-            
+			for (int w = i; w >= 0; w--)
+            {	
+				for (int x = w; x >= 0; x--)
+				{
+					System.out.print("*");
+				}
+				
+				for (int j = k-i; j > 1; j--)
+				{
+					System.out.print(" ");
+				}
+			}  
             System.out.println();
 		}
     }

@@ -1,10 +1,14 @@
-public class TSort
+import java.util.Queue;
+import java.util.LinkedList;
+
+public class CriticalPath
 {
 
     private Vertex[] output;
     private int ctr = 0;
+    private Queue<Vertex> paths = new LinkedList<Vertex>();
 
-    public TSort()
+    public CriticalPath()
     {
     }
 
@@ -31,7 +35,6 @@ public class TSort
 
         if (graphtemp.vert.size() == 0)
         {
-            // System.out.println("Vertex empty. Thus true.");
             return true;
         }
 
@@ -39,7 +42,6 @@ public class TSort
         {
             if (leafResult == -1)
             {
-                // System.out.println("No leaves. Thus false.");
                 return false;
             }
 
@@ -51,7 +53,6 @@ public class TSort
                 ctr++;
 
                 graphtemp.removeVertex(leafResult);
-                // graphtemp.printMatrix();
                 
                 return isDAG(graphtemp);
             }
@@ -66,7 +67,6 @@ public class TSort
         {
             if (isLeaf(gt.vert.get(i), gt))
             {
-                // System.out.print(gt.vert.get(i).getName()+" is a leaf and ");
                 return i;
             }
         }
@@ -75,20 +75,15 @@ public class TSort
 
     public boolean isLeaf(Vertex v, GraphADT gx)
     {
-        // System.out.print("Checking if "+v.getName() +" has incoming: ");
         int vLoc = gx.getPosition(v);
         
         for (int i = 0; i < gx.adjM.length; i++)
         {
             if (gx.adjM[i][vLoc] >= 1)
             {
-                
-                // System.out.print(gx.vert.get(vLoc).getName()+" has indegree ");
-                // System.out.println(gx.adjM[i][vLoc]+" ("+i+", "+vLoc+") ");
                 return false;
             }
         }
-        // System.out.println(v.getName() +" has indegree 0");
 
         return true;
     }

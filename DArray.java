@@ -1,5 +1,3 @@
-import java.util.*;
-
 public class DArray<T>
 {
     private T[] arr = (T[]) new Object[0];

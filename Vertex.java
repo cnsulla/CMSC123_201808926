@@ -5,19 +5,28 @@ public class Vertex
     private String Name;
     private boolean hasEdge;
     private boolean visited = false;
-    public ArrayList<Vertex> adjList = new ArrayList<Vertex>();
     private int path = -1;
     private int inDegree = 0;
-    
-    // private String weight;
+    private double criticalPath = 0;
+    public ArrayList<Vertex> adjList = new ArrayList<Vertex>();
+
+    public Vertex()
+    {
+    }
 
     public Vertex(String name)
     {
         this.Name = name;
     }
 
-    public Vertex()
+    public void setCPath(double path)
     {
+        this.criticalPath = path;
+    }
+
+    public double getCPath()
+    {
+        return this.criticalPath;
     }
 
     public void addInDegree()
@@ -35,11 +44,6 @@ public class Vertex
         return this.inDegree;
     }
 
-    public void addAdjV(Vertex add)
-    {
-        this.adjList.add(add);
-    }
-
     public void setVisited()
     {
         this.visited = true;
@@ -47,12 +51,17 @@ public class Vertex
 
     public void unVisit()
     {
-        this.visited = true;
+        this.visited = false;
     }
 
     public boolean hasVisited()
     {
         return this.visited;
+    }
+
+    public void addAdjV(Vertex add)
+    {
+        this.adjList.add(add);
     }
 
     public Vertex removeAdjV(String remove)

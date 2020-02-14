@@ -11,15 +11,36 @@ public class Tester03
         
         SSUPL sup = new SSUPL();
         GraphADT graph = new GraphADT();
+        //0-1,1-3,1-2,0-2,2-3,0-4,4-7,7-8,8-6,6-4,4-2,2-5
+        graph.addVertex("A");//0
+        graph.addVertex("B");//1
+        graph.addVertex("C");//2
+        graph.addVertex("D");//3
+        graph.addVertex("E");//4
+        graph.addVertex("F");//5
+        graph.addVertex("G");//6
+        graph.addVertex("H");//7
+        graph.addVertex("I");//8
+        graph.addEdge(0,1);
+        graph.addEdge(0,2);
+        graph.addEdge(0,4);
+        graph.addEdge(1,3);
+        graph.addEdge(1,2);
+        graph.addEdge(2,3);
+        graph.addEdge(2,5);
+        graph.addEdge(4,2);
+        graph.addEdge(4,7);
+        graph.addEdge(6,4);
+        graph.addEdge(7,8);
+        graph.addEdge(8,6);
 
         while(bool = true)
         {
             System.out.println("-------------------------------------------------------------------------");
-            graph.printAdjList();
-            // System.out.println ("bool = " + bool);
-            System.out.println("\nUndirected, unweighted graph has a total of " + graph.getVertices() + " vertices and " + graph.getEdges() + " edges.");
-            System.out.println("Choose (1-7 only): ");
-            System.out.print("1. Add Vertex\n2. Remove Vertex\n3. Add edge \n4. Remove edge \n5. Depth First Search\n6. SSUPL\n\nInput Selection: "); 
+            graph.printMatrix();
+            System.out.println("Undirected, unweighted graph has " + graph.getVertices() + " vertices and " + graph.getEdges() + " unique edges.");
+            System.out.println("Choose (1-6 only): ");
+            System.out.print("MODIFICATIONS:\n1. Add Vertex\n2. Remove Vertex\n3. Add edge \n4. Remove edge \n\nQUERIES: \n5. Traversals\n6. SSUPL\n\nInput Selection: "); 
             choice = scan.nextInt();
             System.out.println("-------------------------------------------------------------------------");
             switch (choice)
@@ -61,9 +82,21 @@ public class Tester03
                     graph.removeEdge(fr, tr);
                     break;
                 case 5:
-                    System.out.println("\nPRINTING: DFS");
+                    System.out.println("PRINTING TRAVERSALS");
 
-                    graph.depthTraverse();
+                    ArrayList<Integer> outdfs = graph.depthFirst();
+                    System.out.print("DFS: ");
+                    for (int i = 0; i < outdfs.size(); i++){
+                        System.out.print(graph.vert.get(outdfs.get(i)).getName()+" ");
+                    }
+                    System.out.println();
+
+                    ArrayList<Integer> outbfs = graph.breadthFirst();
+                    System.out.print("BFS: ");
+                    for (int i = 0; i < outbfs.size(); i++){
+                        System.out.print(graph.vert.get(outbfs.get(i)).getName()+" ");
+                    }
+                    System.out.println();
                     break;
                 case 6:
                     System.out.println("FINDING PATHS TO ALL VERTICES");
@@ -72,26 +105,14 @@ public class Tester03
                     int dimen = scan.nextInt();
                     int[] arrout = sup.SSUPL(graph, graph.vert.get(dimen));
 
-                    System.out.print("Paths:\t");
+                    System.out.print("Paths:\t\t");
                     for (int i = 0; i < arrout.length; i++){
-                        System.out.print(arrout[i]+" ");
+                        System.out.print(arrout[i]+"\t");
                     }
                     System.out.println();
                     System.out.print("Vertices:\t");
                     for (int i = 0; i < graph.vert.size(); i++){
-                        System.out.print(graph.vert.get(i).getName()+" ");
-                    }
-                    System.out.println();
-                    break;
-                case 7:
-                    System.out.println("GETTING NEIGHBORS");
-                    System.out.print("Vertex: ");
-                    int neigh = scan.nextInt();
-
-                    ArrayList<Integer> neighbors = graph.getNeighbor(graph.vert.get(neigh));
-
-                    for (int i = 0; i < neighbors.size(); i++){
-                        System.out.print(neighbors.get(i)+" ");
+                        System.out.print(graph.vert.get(i).getName()+"\t");
                     }
                     System.out.println();
                     break;
