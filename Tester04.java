@@ -115,11 +115,7 @@ public class Tester04
                     try 
                     {
                         TSort tsort = new TSort();
-                        Vertex[] out = tsort.topologicalSort(graph);
-
-                        for (int i = 0; i < out.length; i++){
-                            System.out.print(out[i].getName() + " ");
-                        }
+                        tsort.topologicalSort(graph);
                     }
                     catch (CloneNotSupportedException | InputNotDAGException e){
                         System.out.println(e.getMessage());

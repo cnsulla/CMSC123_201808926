@@ -8,10 +8,6 @@ public class CriticalPath
     private int ctr = 0;
     private Queue<Vertex> paths = new LinkedList<Vertex>();
 
-    public CriticalPath()
-    {
-    }
-
     public Vertex[] topologicalSort(GraphADT graph) throws InputNotDAGException, 
                                                     CloneNotSupportedException
     {
@@ -27,7 +23,7 @@ public class CriticalPath
         else
             throw new InputNotDAGException("Threw InputNotDAGException: Input is not a Directed Acyclic Graph!");
     }
-
+    //CHECKS IF GRAPH IS A DAG, OTHERWISE RETURNS FALSE
     public boolean isDAG(GraphADT graph) throws CloneNotSupportedException 
     {
         GraphADT graphtemp = (GraphADT)graph.clone();
@@ -60,7 +56,7 @@ public class CriticalPath
 
         return false;
     }
-
+    //RETURNS INDEX OF LEAF (zero indegree) IN GEAPH IF EXISTS
     public int getLeaf(GraphADT gt)
     {
         for (int i = 0; i < gt.vert.size(); i ++)
@@ -72,7 +68,7 @@ public class CriticalPath
         }
         return -1;
     }
-
+    //CHECKS IF GIVEN VERTEX IS A LEAF (zero indegree)
     public boolean isLeaf(Vertex v, GraphADT gx)
     {
         int vLoc = gx.getPosition(v);

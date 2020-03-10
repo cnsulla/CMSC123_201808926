@@ -3,16 +3,15 @@ import java.util.ArrayList;
 import java.util.Queue;
 import java.util.LinkedList;
 
-
 public class GraphADT implements Cloneable
 {
-    public int[][] adjM;
+    public double[][] adjM;
     public ArrayList<Vertex> vert = new ArrayList<Vertex>();
     private Stack<Vertex> dfs = new Stack<Vertex>();
     private Queue<Vertex> bfs = new LinkedList<Vertex>();
 
     @Override
-    public Object clone() throws
+    protected Object clone() throws
                    CloneNotSupportedException 
     { 
         GraphADT cloned = (GraphADT)super.clone();
@@ -41,24 +40,27 @@ public class GraphADT implements Cloneable
             // adding a new vertex
             if (adjM == null)
             {
-                adjM = new int[vert.size()][vert.size()];
+                adjM = new double[vert.size()][vert.size()];
             }
             
-            int[][] temp = new int[vert.size()][vert.size()];
+            double[][] temp = new double[vert.size()][vert.size()];
             for (int i = 0 ; i < vert.size(); i++)
             {
                 for (int x = 0; x < vert.size(); x++)
                 {
-                    if (x < adjM.length
+                    if (x == i)
+                        temp[i][x] = 0;
+
+                    else if (x < adjM.length
                         &&  i < adjM.length
-                            && adjM[i][x] >= 1)
+                            && adjM[i][x] != Double.POSITIVE_INFINITY)
                     {
                         temp[i][x] = adjM[i][x];
                     }
 
                     else
                     {
-                        temp[i][x] = 0;
+                        temp[i][x] = Double.POSITIVE_INFINITY;
                     }
                 }
             }
@@ -68,7 +70,7 @@ public class GraphADT implements Cloneable
         else if (choice == 1)
         {
             // removing a vertex
-            int[][] temp = new int[adjM.length-1][adjM.length-1];
+            double[][] temp = new double[adjM.length-1][adjM.length-1];
 
             for (int x = 0 ; x < adjM.length; x++)
             {
@@ -118,6 +120,14 @@ public class GraphADT implements Cloneable
         vert.get(from).addAdjV(vert.get(to));
         vert.get(to).addInDegree();
         adjM[from][to] = 1;
+    }
+
+    public void addDirWeightedEdge(int from, int to, double weight)
+    {
+        vert.get(from).addEdge();
+        vert.get(from).addAdjV(vert.get(to));
+        vert.get(to).addInDegree();
+        adjM[from][to] = weight;
     }
 
     public void removeEdge(int from, int to)
@@ -200,33 +210,92 @@ public class GraphADT implements Cloneable
 
         else
         {
+
         System.out.print("\n   ");
+
         for (int i = 0 ; i < adjM.length ; i++)
         {
             System.out.print((i) + " ");
         }
+
         System.out.print("\n  ");
+
         for (int i = 0; i < adjM.length*2; i++)
         {
             System.out.print("-");
         }
+
         System.out.print("\n");
+
         for (int i = 0; i < adjM.length ; i++)
         {
             System.out.print((i) + "| ");
+
             for (int x = 0; x < adjM.length ; x++)
             {
-                if (adjM[i][x] >= 1)
+                if (i == x)
+                    System.out.print("0 ");
+
+                else if (i != x) {
+                if (adjM[i][x] != Double.POSITIVE_INFINITY)
                     System.out.print("1 ");
-                    
-                else
+                else if (adjM[i][x] == Double.POSITIVE_INFINITY)
                     System.out.print("  ");
+                }
             }
+
             System.out.print("\n");
         }
         // printVertexList();
         printAdjList();
 
+        System.out.print("\n");
+        }
+    }
+
+    public void printWeightedMatrix()
+    {
+        if (adjM == null || adjM.length == 0)
+        {
+            System.out.println("\n\nEmpty graph");
+        }
+
+        else
+        {
+        System.out.print("\n   ");
+
+        for (int i = 0 ; i < adjM.length ; i++)
+        {
+            System.out.print((i) + "\t");
+        }
+
+        System.out.print("\n  ");
+
+        for (int i = 0; i < adjM.length*6; i++)
+        {
+            System.out.print("-");
+        }
+
+        System.out.print("\n");
+
+        for (int i = 0; i < adjM.length ; i++)
+        {
+            System.out.print((i) + "|");
+
+            for (int x = 0; x < adjM.length ; x++)
+            {
+                if (adjM[i][x] != Double.POSITIVE_INFINITY)
+                    if (adjM[i][x] == 0)
+                        System.out.print("0\t");
+                    else
+                        System.out.print(adjM[i][x]+"\t");
+                else
+                    System.out.print("   \t");
+            }
+
+            System.out.print("\n");
+        }
+        printAdjList();
         System.out.print("\n");
         }
     }
@@ -260,7 +329,7 @@ public class GraphADT implements Cloneable
     {
         if (vert.size() == 0)
         {
-
+            System.out.println("\n\nEmpty graph");
         }
 
         System.out.print("\n");

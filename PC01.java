@@ -9,15 +9,15 @@ public class PC01
 	{
 		for (int i = 0; i < k; i ++)
 		{
-			System.out.print("\n");
 			for (int j = i+1; j < k; j ++)
 			{
 				System.out.print(" ");
 			}
 			for (int x = 0; x <= i; x ++)
 			{
-				System.out.print("X ");
+				System.out.print(i+" ");
 			}
+			System.out.print("\n");
 		}
 	}
 

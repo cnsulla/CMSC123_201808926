@@ -1,95 +1,166 @@
+import java.util.Queue;
+import java.util.LinkedList;
+import java.util.ArrayList;
+
 public class TSort
 {
+    private double[] critPath;
+    private Queue<Vertex> unsettled = new LinkedList<Vertex>();
+    private Queue<Vertex> settled = new LinkedList<Vertex>();
 
-    private Vertex[] output;
-    private int ctr = 0;
-
-    public TSort()
-    {
-    }
-
-    public Vertex[] topologicalSort(GraphADT graph) throws InputNotDAGException, 
+    public void topologicalSort(GraphADT graph) throws InputNotDAGException, 
                                                     CloneNotSupportedException
     {
-        output = new Vertex[graph.vert.size()];
-        GraphADT graphtemp = (GraphADT)graph.clone();
-
-        if (isDAG(graphtemp))
-        {
-            System.out.println("Input is a Directed Acyclic Graph!");
-            return output;
-        }
+        if (isDAG(graph))
+            System.out.println("Topological Sort Exists.");
 
         else
             throw new InputNotDAGException("Threw InputNotDAGException: Input is not a Directed Acyclic Graph!");
     }
 
+    public double[] criticalPath(GraphADT graph) throws InputNotDAGException, 
+                                                    CloneNotSupportedException
+    {
+        if (isDAG(graph))
+            return critPath;
+
+        else
+            throw new InputNotDAGException("Threw InputNotDAGException: Input is not a Directed Acyclic Graph!");
+    }
+
+    ///FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFIX THIS TO NOT DELETE ALL VERTICES
+    //CHECKS IF GRAPH IS A DAG, OTHERWISE RETURNS FALSE
     public boolean isDAG(GraphADT graph) throws CloneNotSupportedException 
     {
-        GraphADT graphtemp = (GraphADT)graph.clone();
-        int leafResult = getLeaf(graphtemp);
+        int source = getSrc(graph);
 
-        if (graphtemp.vert.size() == 0)
+        //INITIALIZED GRAPH SHITS
+        boolean[] visited = new boolean[graph.vert.size()];
+        int[] indeg = new int[graph.vert.size()];
+        for (int i = 0; i < indeg.length; i++)
         {
-            // System.out.println("Vertex empty. Thus true.");
+            for (int j = 0; j < indeg.length; j++)
+            {
+                if (graph.adjM[i][j] != Double.POSITIVE_INFINITY && i != j)
+                {
+                    indeg[j] += 1;
+                }
+            }
+        }
+
+        ArrayList<Integer> listOfTopSorts = new ArrayList<Integer>();
+
+        findTopologicalSorts(graph, visited, indeg, listOfTopSorts);
+
+        if (graph.vert.size() == 0)
+        {
             return true;
         }
 
         else
         {
-            if (leafResult == -1)
+            if (source == -1)
             {
-                // System.out.println("No leaves. Thus false.");
                 return false;
             }
 
-            else if (leafResult >= 0)
+            else if (source >= 0)
             {
-                // System.out.println("will remove " + graphtemp.vert.get(leafResult).getName());
+                // System.out.println(graph.vert.get(source).getName() + " has length: " + graph.vert.get(source).getCPath());
                 
-                output[ctr] = graphtemp.vert.get(leafResult);
-                ctr++;
-
-                graphtemp.removeVertex(leafResult);
-                // graphtemp.printMatrix();
+                graph.removeVertex(source);
                 
-                return isDAG(graphtemp);
+                return isDAG(graph);
             }
         }
 
         return false;
     }
+    // FINDS ALL TOPOLOGICAL SORTS OF A GIVEN GRAPH
+    public void findTopologicalSorts(GraphADT graph, boolean[] visited, int[] indeg, ArrayList<Integer> listOfTopSorts) throws CloneNotSupportedException 
+    {
+        boolean foundall = true;
+        
+        for (int i = 0; i < graph.vert.size(); i ++)
+        {
 
-    public int getLeaf(GraphADT gt)
+            if (!visited[i] && indeg[i] == 0)
+            {
+                listOfTopSorts.add(i);
+                visited[i] = true;
+
+                //FINDS ALL ADJACENT VERTICES TO CURRENT
+                boolean[] adjacents = findAdjacent(i, graph);
+
+                //REDUCES INDEGREE OF ALL VERTICES ADJACENT 
+                for (int x = 0; x < adjacents.length; x++)
+                {
+                    if (adjacents[x])
+                        indeg[x]--;
+                }
+                
+                findTopologicalSorts(graph, visited, indeg, listOfTopSorts);
+
+                //RESETS PARAMETERS
+                visited[i] = false;
+                listOfTopSorts.remove(listOfTopSorts.size()-1);
+                for (int x = 0; x < adjacents.length; x++)
+                {
+                    if (adjacents[x])
+                        indeg[x]++;
+                }
+
+                foundall = false;
+            }
+        }
+        
+        if (foundall)
+        {
+            listOfTopSorts.forEach(i -> System.out.print(graph.vert.get(i).getName() + " ")); 
+            System.out.println();
+        }
+    }
+
+    //FINDS ADJACENT VERTICES TO CURRENT NODE
+    public boolean[] findAdjacent(int v, GraphADT graph)
+    {
+        boolean[] adjacents = new boolean[graph.vert.size()];
+        
+        for (int i = 0; i < graph.adjM.length; i++)
+        {
+            if (graph.adjM[v][i] != Double.POSITIVE_INFINITY && i != v)
+                {
+                    adjacents[i] = true; 
+                }
+        }
+        return adjacents;
+    }
+
+    //RETURNS INDEX OF LEAF (zero indegree) IN GRAPH IF EXISTS
+    public int getSrc(GraphADT gt)
     {
         for (int i = 0; i < gt.vert.size(); i ++)
         {
-            if (isLeaf(gt.vert.get(i), gt))
+            if (isSource(gt.vert.get(i), gt))
             {
-                // System.out.print(gt.vert.get(i).getName()+" is a leaf and ");
                 return i;
             }
         }
         return -1;
     }
 
-    public boolean isLeaf(Vertex v, GraphADT gx)
+    //CHECKS IF GIVEN VERTEX IS A LEAF (zero indegree)
+    public boolean isSource(Vertex v, GraphADT gx)
     {
-        // System.out.print("Checking if "+v.getName() +" has incoming: ");
         int vLoc = gx.getPosition(v);
         
         for (int i = 0; i < gx.adjM.length; i++)
         {
-            if (gx.adjM[i][vLoc] >= 1)
+            if (gx.adjM[i][vLoc] != Double.POSITIVE_INFINITY && i != vLoc)
             {
-                
-                // System.out.print(gx.vert.get(vLoc).getName()+" has indegree ");
-                // System.out.println(gx.adjM[i][vLoc]+" ("+i+", "+vLoc+") ");
                 return false;
             }
         }
-        // System.out.println(v.getName() +" has indegree 0");
-
         return true;
     }
 }
